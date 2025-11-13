@@ -11,7 +11,7 @@
 8. [Authentication & Authorization](#authentication--authorization)
 9. [Error Handling Best Practices](#error-handling-best-practices)
 10. [Practice Exercises](#practice-exercises)
-11. [Viva Questions & Answers](#viva-questions--answers)
+
 
 
 ## What is an API?

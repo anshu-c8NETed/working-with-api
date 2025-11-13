@@ -1,0 +1,167 @@
+API QUICK NOTES
+====================================
+
+1. CORE CONCEPTS
+================
+- API: Bridge between frontend and backend using HTTP
+- REST API: Uses HTTP methods, stateless, works with resources
+- Endpoint: URL where API is accessed (e.g., api.example.com/users)
+- JSON: Key-value data format {"name": "John", "age": 25}
+
+2. HTTP METHODS (CRUD)
+======================
+
+Method    Purpose           Body?   Success Code
+------    -------           -----   ------------
+GET       Read data         NO      200
+POST      Create new        YES     201
+PUT       Replace all       YES     200
+PATCH     Partial update    YES     200
+DELETE    Remove            NO      200/204
+
+PUT vs PATCH:
+- PUT: All fields required (missing fields become null)
+- PATCH: Only fields you want to change
+
+3. STATUS CODES
+===============
+
+Success (2xx):
+- 200 OK: Request successful
+- 201 Created: New resource created (POST)
+- 204 No Content: Success, no response body
+
+Client Errors (4xx):
+- 400: Bad request (invalid data)
+- 401: Authentication missing/failed (no token)
+- 403: No permission (logged in but forbidden)
+- 404: Resource not found
+- 422: Validation failed
+
+Server Errors (5xx):
+- 500: Internal server error
+- 503: Service unavailable
+
+4. AUTH vs AUTHORIZATION
+========================
+
+Authentication              Authorization
+--------------              -------------
+WHO are you?                WHAT can you do?
+Login process               Permission check
+Error: 401                  Error: 403
+Username + Password         Admin vs User roles
+
+Auth goes in HEADER, not body:
+Authorization: Bearer token_here
+
+5. FETCH API
+============
+
+GET Request:
+const response = await fetch(url);
+const data = await response.json();
+
+POST Request:
+const response = await fetch(url, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(userData)
+});
+
+With Error Handling:
+try {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('Failed');
+  const data = await response.json();
+} catch (error) {
+  console.error(error);
+}
+
+6. AXIOS
+========
+
+GET:
+const response = await axios.get(url);
+console.log(response.data);
+
+POST:
+const response = await axios.post(url, userData);
+
+With Auth:
+axios.defaults.headers.common['Authorization'] = 'Bearer token';
+
+Fetch vs Axios:
+- Fetch: Need .json(), manual error handling
+- Axios: Auto JSON, better errors, cleaner syntax
+
+7. ERROR HANDLING
+=================
+
+try {
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    switch (response.status) {
+      case 401: throw new Error('Please login');
+      case 403: throw new Error('No permission');
+      case 404: throw new Error('Not found');
+      default: throw new Error(`Error: ${response.status}`);
+    }
+  }
+  
+  const data = await response.json();
+  return data;
+  
+} catch (error) {
+  console.error('Error:', error.message);
+  return null;
+}
+
+8. POSTMAN TESTING
+==================
+
+Test API: https://jsonplaceholder.typicode.com
+
+1. GET: Select GET → Enter URL → Send
+2. POST: Select POST → Add Header Content-Type: application/json 
+         → Body (raw JSON) → Send
+3. Check: Status code, Response time, Response body
+
+9. TOP VIVA QUESTIONS
+=====================
+
+Q: PUT vs PATCH?
+A: PUT replaces entire resource (missing fields become null), 
+   PATCH updates only specified fields.
+
+Q: 401 vs 403?
+A: 401 = Not logged in, 403 = Logged in but no permission.
+
+Q: Why Content-Type header?
+A: Tells server data format (application/json for JSON).
+
+Q: Why body not in GET?
+A: GET retrieves data, doesn't send. Data goes in URL as query params.
+
+Q: Successful POST status?
+A: 201 Created.
+
+Q: Authentication vs Authorization?
+A: Authentication = WHO (identity), Authorization = WHAT (permissions).
+
+Q: What is JSON?
+A: Lightweight data format, key-value pairs, human readable.
+
+Q: Why try-catch?
+A: Handle network failures, prevent crashes, show user-friendly errors.
+
+QUICK CHECKLIST
+===============
+- 5 HTTP methods + CRUD mapping
+- Status codes: 200, 201, 400, 401, 403, 404, 500
+- PUT vs PATCH difference
+- Auth header syntax
+- Fetch GET + POST syntax
+- Error handling with try-catch
+- Postman basic testing

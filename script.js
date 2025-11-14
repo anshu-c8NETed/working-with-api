@@ -1197,23 +1197,6 @@ function showBookmarks() {
     showToast(`Showing ${bookmarked.length} bookmarked questions`, 'success');
 }
 
-// ==================== QUIZ MODE ====================
-let quizMode = false;
-let quizScore = 0;
-let quizQuestions = [];
-
-function startQuiz(questionCount = 5) {
-    quizMode = true;
-    quizScore = 0;
-    quizQuestions = vivaQuestions
-        .sort(() => 0.5 - Math.random())
-        .slice(0, questionCount);
-    
-    showToast(`Quiz started! ${questionCount} questions`, 'success');
-    
-    // This would need a dedicated quiz UI
-    console.log('Quiz questions:', quizQuestions);
-}
 
 // ==================== EXPORT TO PDF (Placeholder) ====================
 function exportToPDF() {
@@ -1221,6 +1204,838 @@ function exportToPDF() {
     // Would need a library like jsPDF
 }
 
+
+// ==================== QUIZ DATA ====================
+const quizQuestions = {
+    beginner: [
+        {
+            question: "What does API stand for?",
+            options: [
+                "Application Programming Interface",
+                "Advanced Programming Integration",
+                "Automated Process Interface",
+                "Application Process Integration"
+            ],
+            correct: 0,
+            explanation: "API stands for Application Programming Interface. It's a set of rules and protocols that allows different software applications to communicate with each other."
+        },
+        {
+            question: "Which HTTP method is used to retrieve data?",
+            options: ["POST", "GET", "PUT", "DELETE"],
+            correct: 1,
+            explanation: "GET is used to retrieve/read data from the server. It does not modify any data and should not have a request body."
+        },
+        {
+            question: "What status code indicates a successful request?",
+            options: ["404", "500", "200", "401"],
+            correct: 2,
+            explanation: "Status code 200 OK indicates that the request was successful and the server has returned the requested data."
+        },
+        {
+            question: "What does JSON stand for?",
+            options: [
+                "JavaScript Object Notation",
+                "Java Syntax Object Notation",
+                "JavaScript Online Network",
+                "Java Standard Object Network"
+            ],
+            correct: 0,
+            explanation: "JSON stands for JavaScript Object Notation. It's a lightweight data-interchange format that's easy for humans to read and write."
+        },
+        {
+            question: "Which HTTP method is used to create new resources?",
+            options: ["GET", "DELETE", "POST", "PATCH"],
+            correct: 2,
+            explanation: "POST is used to create new resources on the server. It typically returns a 201 Created status code on success."
+        },
+        {
+            question: "What does REST stand for?",
+            options: [
+                "Remote Execution Service Technology",
+                "Representational State Transfer",
+                "Reliable Execution State Transfer",
+                "Remote State Transfer"
+            ],
+            correct: 1,
+            explanation: "REST stands for Representational State Transfer. It's an architectural style for designing networked applications."
+        },
+        {
+            question: "Which status code means 'Not Found'?",
+            options: ["400", "401", "404", "500"],
+            correct: 2,
+            explanation: "Status code 404 means the requested resource could not be found on the server."
+        },
+        {
+            question: "What is the purpose of an API endpoint?",
+            options: [
+                "To store data permanently",
+                "A specific URL where API resources can be accessed",
+                "To encrypt data",
+                "To compress data"
+            ],
+            correct: 1,
+            explanation: "An endpoint is a specific URL where an API resource can be accessed. For example: /users/123 to access user with ID 123."
+        },
+        {
+            question: "Which HTTP method is idempotent?",
+            options: ["POST", "PATCH", "GET", "All of the above"],
+            correct: 2,
+            explanation: "GET is idempotent, meaning multiple identical requests will produce the same result as a single request. POST is NOT idempotent."
+        },
+        {
+            question: "What format is commonly used for API data exchange?",
+            options: ["XML only", "JSON only", "Both JSON and XML", "Plain text only"],
+            correct: 2,
+            explanation: "APIs commonly use both JSON and XML for data exchange, though JSON is more popular in modern REST APIs due to its simplicity."
+        }
+    ],
+    intermediate: [
+        {
+            question: "What's the main difference between PUT and PATCH?",
+            options: [
+                "PUT is faster than PATCH",
+                "PUT replaces entire resource, PATCH updates specific fields",
+                "PATCH is for creating, PUT is for updating",
+                "They are exactly the same"
+            ],
+            correct: 1,
+            explanation: "PUT replaces the entire resource (all fields must be sent), while PATCH updates only the specified fields, leaving others unchanged."
+        },
+        {
+            question: "What status code is returned when authentication is required but not provided?",
+            options: ["403 Forbidden", "401 Unauthorized", "404 Not Found", "400 Bad Request"],
+            correct: 1,
+            explanation: "401 Unauthorized means authentication is required but was not provided or failed. 403 means you're authenticated but don't have permission."
+        },
+        {
+            question: "What does the Content-Type header specify?",
+            options: [
+                "The size of the data",
+                "The format of the data being sent",
+                "The authentication method",
+                "The API version"
+            ],
+            correct: 1,
+            explanation: "Content-Type header tells the server what format the data is in (e.g., application/json). It's essential for proper data parsing."
+        },
+        {
+            question: "Which HTTP method should be used for partial updates?",
+            options: ["PUT", "PATCH", "POST", "UPDATE"],
+            correct: 1,
+            explanation: "PATCH is designed for partial updates where you only send the fields that need to be changed."
+        },
+        {
+            question: "What does a 422 status code indicate?",
+            options: [
+                "Server error",
+                "Not found",
+                "Unprocessable entity (validation error)",
+                "Unauthorized access"
+            ],
+            correct: 2,
+            explanation: "422 Unprocessable Entity means the request was well-formed but contains semantic errors, typically validation failures."
+        },
+        {
+            question: "What's the difference between 401 and 403 status codes?",
+            options: [
+                "No difference, they're the same",
+                "401 = not authenticated, 403 = authenticated but no permission",
+                "403 = not authenticated, 401 = authenticated but no permission",
+                "Both mean 'not found'"
+            ],
+            correct: 1,
+            explanation: "401 Unauthorized means you're not logged in. 403 Forbidden means you're logged in but don't have permission to access the resource."
+        },
+        {
+            question: "Should GET requests have a request body?",
+            options: [
+                "Yes, always",
+                "No, parameters should go in URL as query strings",
+                "Only for large data",
+                "Only with authentication"
+            ],
+            correct: 1,
+            explanation: "GET requests should not have a body. All parameters should be passed in the URL as query strings (e.g., /users?name=John&age=25)."
+        },
+        {
+            question: "What does 'idempotent' mean in the context of HTTP methods?",
+            options: [
+                "The request is encrypted",
+                "Multiple identical requests produce the same result as one request",
+                "The request is very fast",
+                "The request requires authentication"
+            ],
+            correct: 1,
+            explanation: "Idempotent means making the same request multiple times produces the same result. GET, PUT, and DELETE are idempotent; POST is not."
+        },
+        {
+            question: "What status code should a successful POST request return?",
+            options: ["200 OK", "201 Created", "204 No Content", "202 Accepted"],
+            correct: 1,
+            explanation: "A successful POST request that creates a new resource should return 201 Created, not 200 OK."
+        },
+        {
+            question: "What is CORS?",
+            options: [
+                "A database system",
+                "Cross-Origin Resource Sharing - security feature restricting API access",
+                "A type of API authentication",
+                "A programming language"
+            ],
+            correct: 1,
+            explanation: "CORS (Cross-Origin Resource Sharing) is a security feature that restricts which domains can access an API from browsers."
+        },
+        {
+            question: "Where should API authentication tokens typically be placed?",
+            options: [
+                "In the request body",
+                "In the URL",
+                "In the Authorization header",
+                "In a cookie only"
+            ],
+            correct: 2,
+            explanation: "Authentication tokens should be placed in the Authorization header (e.g., 'Authorization: Bearer token'), not in the body or URL."
+        },
+        {
+            question: "What does a 500 status code indicate?",
+            options: [
+                "Client error - bad request",
+                "Server error - internal problem",
+                "Success",
+                "Authentication required"
+            ],
+            correct: 1,
+            explanation: "500 Internal Server Error indicates a problem on the server side, not with the client's request."
+        },
+        {
+            question: "Can DELETE requests have a request body?",
+            options: [
+                "Yes, always required",
+                "No, never allowed",
+                "Technically possible but not standard practice",
+                "Only with authentication"
+            ],
+            correct: 2,
+            explanation: "While technically possible, DELETE requests typically don't have a body. The resource to delete is specified in the URL."
+        },
+        {
+            question: "What's the difference between 200 and 204 status codes?",
+            options: [
+                "No difference",
+                "200 includes response body, 204 has no content",
+                "204 is an error, 200 is success",
+                "200 is for GET, 204 is for POST"
+            ],
+            correct: 1,
+            explanation: "200 OK includes data in the response body. 204 No Content means success but no body is returned (common for DELETE)."
+        },
+        {
+            question: "What does 'stateless' mean in REST API context?",
+            options: [
+                "The API doesn't work",
+                "Each request contains all needed information; server doesn't store session",
+                "The API is very fast",
+                "The API doesn't use databases"
+            ],
+            correct: 1,
+            explanation: "Stateless means each request must contain all necessary information. The server doesn't store session data between requests."
+        }
+    ],
+    advanced: [
+        {
+            question: "What happens if you send all fields with PATCH instead of PUT?",
+            options: [
+                "Server will reject it",
+                "It works the same as PUT",
+                "PATCH still only updates specified fields, but practically similar to PUT",
+                "It causes an error"
+            ],
+            correct: 2,
+            explanation: "If you send all fields with PATCH, it will update all of them, making it functionally similar to PUT, but the semantic intent is different."
+        },
+        {
+            question: "Which HTTP methods are considered 'safe' (don't modify server state)?",
+            options: [
+                "GET only",
+                "GET and HEAD",
+                "GET, POST, PUT",
+                "All methods are safe"
+            ],
+            correct: 1,
+            explanation: "Safe methods (GET, HEAD) don't modify server state. They only retrieve data. POST, PUT, PATCH, DELETE all modify state."
+        },
+        {
+            question: "What's the recommended way to handle pagination in REST APIs?",
+            options: [
+                "Return all data at once",
+                "Use query parameters like ?page=1&limit=20",
+                "Create separate endpoints for each page",
+                "Pagination is not recommended"
+            ],
+            correct: 1,
+            explanation: "Pagination should use query parameters like ?page=1&limit=20 or ?offset=0&limit=20 to control which subset of data to return."
+        },
+        {
+            question: "What's the purpose of the OPTIONS HTTP method?",
+            options: [
+                "To update data",
+                "To delete data",
+                "To describe communication options for the target resource",
+                "To create new resources"
+            ],
+            correct: 2,
+            explanation: "OPTIONS is used to describe the communication options (allowed methods, CORS headers) for the target resource."
+        },
+        {
+            question: "What is rate limiting in APIs?",
+            options: [
+                "Slowing down all requests",
+                "Restricting number of requests a client can make in a time period",
+                "A security vulnerability",
+                "A way to compress data"
+            ],
+            correct: 1,
+            explanation: "Rate limiting restricts the number of API requests a client can make within a specific time period to prevent abuse."
+        },
+        {
+            question: "What's the difference between API versioning in URL vs header?",
+            options: [
+                "No difference",
+                "URL (/v1/users) is more visible, header is more RESTful but less discoverable",
+                "Headers are always better",
+                "URL versioning doesn't work"
+            ],
+            correct: 1,
+            explanation: "URL versioning (/v1/users) is more visible and easier to use. Header versioning is more RESTful but less discoverable and harder to test."
+        },
+        {
+            question: "What does the 'ETag' header represent?",
+            options: [
+                "Error tag for debugging",
+                "A version identifier for caching and concurrency control",
+                "Email tag for notifications",
+                "Encryption tag"
+            ],
+            correct: 1,
+            explanation: "ETag (entity tag) is a version identifier used for caching and optimistic concurrency control to detect changes."
+        },
+        {
+            question: "What's the recommended HTTP method for bulk operations?",
+            options: [
+                "Multiple POST requests",
+                "Single POST to a batch endpoint with array of operations",
+                "PUT with all data",
+                "DELETE everything and recreate"
+            ],
+            correct: 1,
+            explanation: "Bulk operations should use a batch endpoint (POST /batch) with an array of operations to reduce network overhead."
+        },
+        {
+            question: "What is HATEOAS in REST?",
+            options: [
+                "A security protocol",
+                "Hypermedia As The Engine Of Application State - links in responses",
+                "A database system",
+                "An authentication method"
+            ],
+            correct: 1,
+            explanation: "HATEOAS means including hypermedia links in API responses to guide clients on available actions and navigation."
+        },
+        {
+            question: "How should API errors be structured?",
+            options: [
+                "Plain text messages only",
+                "HTTP status code only",
+                "Status code + structured error object with code, message, and details",
+                "No error handling needed"
+            ],
+            correct: 2,
+            explanation: "Errors should include HTTP status code plus a structured JSON object with error code, message, and detailed information."
+        },
+        {
+            question: "What's the purpose of the 'Accept' header?",
+            options: [
+                "To accept terms and conditions",
+                "To specify which content types client can handle in response",
+                "To authenticate the request",
+                "To accept cookies"
+            ],
+            correct: 1,
+            explanation: "The Accept header tells the server which content types (e.g., application/json, application/xml) the client can handle."
+        },
+        {
+            question: "What is the difference between OAuth and JWT?",
+            options: [
+                "They're the same thing",
+                "OAuth is authorization framework, JWT is token format",
+                "JWT is always more secure",
+                "OAuth is outdated"
+            ],
+            correct: 1,
+            explanation: "OAuth is an authorization framework/protocol, while JWT (JSON Web Token) is a token format that can be used with OAuth or standalone."
+        },
+        {
+            question: "Should you use HTTP or HTTPS for production APIs?",
+            options: [
+                "HTTP is fine",
+                "HTTPS is mandatory for security",
+                "Doesn't matter",
+                "Only HTTPS for authentication endpoints"
+            ],
+            correct: 1,
+            explanation: "HTTPS is mandatory for production APIs to encrypt data in transit and protect against man-in-the-middle attacks."
+        },
+        {
+            question: "What's the best practice for handling API deprecation?",
+            options: [
+                "Delete old endpoints immediately",
+                "Version APIs, announce deprecation, provide migration path, sunset date",
+                "Never deprecate anything",
+                "Just stop supporting it without notice"
+            ],
+            correct: 1,
+            explanation: "Proper deprecation includes versioning, clear announcement, migration documentation, and a reasonable sunset date."
+        },
+        {
+            question: "What does the 429 status code mean?",
+            options: [
+                "Success",
+                "Not found",
+                "Too Many Requests - rate limit exceeded",
+                "Server error"
+            ],
+            correct: 2,
+            explanation: "429 Too Many Requests indicates the client has exceeded the rate limit. Usually includes Retry-After header."
+        },
+        {
+            question: "What's the recommended approach for handling API timeouts?",
+            options: [
+                "Wait forever",
+                "Implement timeout with retry logic and exponential backoff",
+                "Cancel immediately",
+                "Timeouts are not needed"
+            ],
+            correct: 1,
+            explanation: "Implement reasonable timeouts with retry logic using exponential backoff to handle temporary failures gracefully."
+        },
+        {
+            question: "What is GraphQL's main advantage over REST?",
+            options: [
+                "It's always faster",
+                "Clients can request exactly the data they need in one request",
+                "It's easier to learn",
+                "It doesn't need a server"
+            ],
+            correct: 1,
+            explanation: "GraphQL allows clients to request exactly the data they need in a single request, avoiding over-fetching and under-fetching."
+        },
+        {
+            question: "How should sensitive data be handled in API logs?",
+            options: [
+                "Log everything for debugging",
+                "Redact/mask sensitive data like passwords, tokens, PII",
+                "Don't log anything",
+                "Only log errors"
+            ],
+            correct: 1,
+            explanation: "Sensitive data (passwords, tokens, credit cards, PII) should be redacted or masked in logs to prevent security breaches."
+        },
+        {
+            question: "What's the purpose of API documentation tools like Swagger/OpenAPI?",
+            options: [
+                "To replace the API",
+                "To provide interactive documentation and API contract specification",
+                "Only for testing",
+                "Only for internal use"
+            ],
+            correct: 1,
+            explanation: "Swagger/OpenAPI provides interactive API documentation and serves as a machine-readable API contract specification."
+        },
+        {
+            question: "What is the recommended way to handle API versioning?",
+            options: [
+                "Never version, always update the same endpoint",
+                "Use URL versioning (/v1/) or header versioning, maintain old versions",
+                "Change API randomly",
+                "Versioning is not necessary"
+            ],
+            correct: 1,
+            explanation: "Use clear versioning (URL or header), maintain multiple versions during transition, and communicate changes clearly."
+        }
+    ]
+};
+
+// ==================== QUIZ STATE ====================
+let currentQuiz = {
+    level: '',
+    questions: [],
+    currentQuestionIndex: 0,
+    score: 0,
+    answers: [],
+    startTime: null,
+    endTime: null
+};
+
+// ==================== START QUIZ ====================
+function startQuiz(level, questionCount) {
+    // Reset state
+    currentQuiz = {
+        level: level,
+        questions: shuffleArray(quizQuestions[level]).slice(0, questionCount),
+        currentQuestionIndex: 0,
+        score: 0,
+        answers: [],
+        startTime: Date.now(),
+        endTime: null
+    };
+
+    // Show quiz container
+    document.getElementById('quiz-start').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'block';
+    document.getElementById('quiz-results').style.display = 'none';
+
+    // Update title
+    document.getElementById('quiz-title').textContent = `${capitalizeFirst(level)} Quiz`;
+    document.getElementById('total-questions').textContent = currentQuiz.questions.length;
+
+    // Show first question
+    showQuestion();
+
+    // Start timer
+    startTimer();
+
+    showToast(`${capitalizeFirst(level)} quiz started! Good luck!`, 'success');
+}
+
+// ==================== SHOW QUESTION ====================
+function showQuestion() {
+    const question = currentQuiz.questions[currentQuiz.currentQuestionIndex];
+    const questionCard = document.getElementById('quiz-question-card');
+
+    // Update progress
+    updateQuizProgress();
+
+    // Update question number
+    document.getElementById('q-number').textContent = currentQuiz.currentQuestionIndex + 1;
+    document.getElementById('current-question').textContent = currentQuiz.currentQuestionIndex + 1;
+
+    // Update question text
+    document.getElementById('question-text').textContent = question.question;
+
+    // Create options
+    const optionsContainer = document.getElementById('quiz-options');
+    optionsContainer.innerHTML = '';
+
+    question.options.forEach((option, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'quiz-option';
+        optionDiv.onclick = () => selectAnswer(index);
+
+        const letter = String.fromCharCode(65 + index); // A, B, C, D
+        optionDiv.innerHTML = `
+            <div class="option-letter">${letter}</div>
+            <span>${option}</span>
+        `;
+
+        optionsContainer.appendChild(optionDiv);
+    });
+
+    // Hide explanation
+    document.getElementById('quiz-explanation').style.display = 'none';
+
+    // Update navigation buttons
+    document.getElementById('prev-btn').disabled = currentQuiz.currentQuestionIndex === 0;
+    document.getElementById('next-btn').disabled = true;
+}
+
+// ==================== SELECT ANSWER ====================
+function selectAnswer(answerIndex) {
+    const question = currentQuiz.questions[currentQuiz.currentQuestionIndex];
+    const options = document.querySelectorAll('.quiz-option');
+
+    // Remove previous selection
+    options.forEach(opt => opt.classList.remove('selected'));
+
+    // Mark selected
+    options[answerIndex].classList.add('selected');
+
+    // Check answer
+    const isCorrect = answerIndex === question.correct;
+
+    // Show correct/incorrect
+    options.forEach((opt, index) => {
+        opt.classList.add('disabled');
+        if (index === question.correct) {
+            opt.classList.add('correct');
+        }
+        if (index === answerIndex && !isCorrect) {
+            opt.classList.add('incorrect');
+        }
+    });
+
+    // Update score
+    if (isCorrect) {
+        currentQuiz.score++;
+        showToast('Correct! Well done! ✅', 'success');
+    } else {
+        showToast('Incorrect. See explanation below.', 'error');
+    }
+
+    // Save answer
+    currentQuiz.answers[currentQuiz.currentQuestionIndex] = {
+        selected: answerIndex,
+        correct: question.correct,
+        isCorrect: isCorrect
+    };
+
+    // Show explanation
+    const explanationDiv = document.getElementById('quiz-explanation');
+    document.getElementById('explanation-text').textContent = question.explanation;
+    explanationDiv.style.display = 'block';
+
+    // Update score display
+    document.getElementById('quiz-score').textContent = 
+        `${currentQuiz.score}/${currentQuiz.currentQuestionIndex + 1}`;
+
+    // Enable next button
+    document.getElementById('next-btn').disabled = false;
+}
+
+// ==================== NAVIGATION ====================
+function nextQuestion() {
+    if (currentQuiz.currentQuestionIndex < currentQuiz.questions.length - 1) {
+        currentQuiz.currentQuestionIndex++;
+        showQuestion();
+    } else {
+        finishQuiz();
+    }
+}
+
+function previousQuestion() {
+    if (currentQuiz.currentQuestionIndex > 0) {
+        currentQuiz.currentQuestionIndex--;
+        showPreviousAnswer();
+    }
+}
+
+function showPreviousAnswer() {
+    const question = currentQuiz.questions[currentQuiz.currentQuestionIndex];
+    const previousAnswer = currentQuiz.answers[currentQuiz.currentQuestionIndex];
+
+    // Update UI
+    updateQuizProgress();
+    document.getElementById('q-number').textContent = currentQuiz.currentQuestionIndex + 1;
+    document.getElementById('current-question').textContent = currentQuiz.currentQuestionIndex + 1;
+    document.getElementById('question-text').textContent = question.question;
+
+    // Show options with previous answer
+    const optionsContainer = document.getElementById('quiz-options');
+    optionsContainer.innerHTML = '';
+
+    question.options.forEach((option, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'quiz-option disabled';
+
+        if (previousAnswer) {
+            if (index === question.correct) {
+                optionDiv.classList.add('correct');
+            }
+            if (index === previousAnswer.selected && !previousAnswer.isCorrect) {
+                optionDiv.classList.add('incorrect');
+            }
+            if (index === previousAnswer.selected) {
+                optionDiv.classList.add('selected');
+            }
+        }
+
+        const letter = String.fromCharCode(65 + index);
+        optionDiv.innerHTML = `
+            <div class="option-letter">${letter}</div>
+            <span>${option}</span>
+        `;
+
+        optionsContainer.appendChild(optionDiv);
+    });
+
+    // Show explanation
+    if (previousAnswer) {
+        const explanationDiv = document.getElementById('quiz-explanation');
+        document.getElementById('explanation-text').textContent = question.explanation;
+        explanationDiv.style.display = 'block';
+    }
+
+    // Update buttons
+    document.getElementById('prev-btn').disabled = currentQuiz.currentQuestionIndex === 0;
+    document.getElementById('next-btn').disabled = false;
+}
+
+// ==================== FINISH QUIZ ====================
+function finishQuiz() {
+    currentQuiz.endTime = Date.now();
+
+    // Hide quiz, show results
+    document.getElementById('quiz-container').style.display = 'none';
+    document.getElementById('quiz-results').style.display = 'block';
+
+    // Calculate results
+    const totalQuestions = currentQuiz.questions.length;
+    const percentage = Math.round((currentQuiz.score / totalQuestions) * 100);
+    const timeTaken = Math.floor((currentQuiz.endTime - currentQuiz.startTime) / 1000);
+    const minutes = Math.floor(timeTaken / 60);
+    const seconds = timeTaken % 60;
+
+    // Update results display
+    document.getElementById('results-percentage').textContent = `${percentage}%`;
+    document.getElementById('results-fraction').textContent = 
+        `${currentQuiz.score}/${totalQuestions}`;
+    document.getElementById('correct-answers').textContent = currentQuiz.score;
+    document.getElementById('incorrect-answers').textContent = 
+        totalQuestions - currentQuiz.score;
+    document.getElementById('time-taken').textContent = 
+        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+    // Animate progress circle
+    const circumference = 2 * Math.PI * 90;
+    const offset = circumference - (percentage / 100) * circumference;
+    document.getElementById('results-progress').style.strokeDashoffset = offset;
+
+    // Set icon and message based on performance
+    const resultsIcon = document.getElementById('results-icon');
+    const resultsTitle = document.getElementById('results-title');
+    const resultsMessage = document.getElementById('results-message');
+
+    resultsIcon.className = 'results-icon';
+    if (percentage >= 90) {
+        resultsIcon.classList.add('excellent');
+        resultsIcon.innerHTML = '<i class="fas fa-trophy"></i>';
+        resultsTitle.textContent = 'Outstanding! 🏆';
+        resultsMessage.textContent = 'Excellent work! You have mastered this topic. You\'re ready for real-world API development!';
+    } else if (percentage >= 70) {
+        resultsIcon.classList.add('good');
+        resultsIcon.innerHTML = '<i class="fas fa-star"></i>';
+        resultsTitle.textContent = 'Great Job! ⭐';
+        resultsMessage.textContent = 'Very good performance! You have a solid understanding. Review the missed questions to perfect your knowledge.';
+    } else if (percentage >= 50) {
+        resultsIcon.classList.add('average');
+        resultsIcon.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+        resultsTitle.textContent = 'Good Effort! 👍';
+        resultsMessage.textContent = 'You\'re on the right track, but there\'s room for improvement. Review the concepts and try again!';
+    } else {
+        resultsIcon.classList.add('poor');
+        resultsIcon.innerHTML = '<i class="fas fa-book-open"></i>';
+        resultsTitle.textContent = 'Keep Learning! 📚';
+        resultsMessage.textContent = 'Don\'t worry! Learning takes time. Review the materials, practice more, and try the quiz again.';
+    }
+
+    // Scroll to results
+    document.getElementById('quiz-results').scrollIntoView({ behavior: 'smooth' });
+
+    showToast('Quiz completed! Check your results.', 'success');
+}
+
+// ==================== QUIZ ACTIONS ====================
+function quitQuiz() {
+    if (confirm('Are you sure you want to quit the quiz? Your progress will be lost.')) {
+        backToQuizSelect();
+        showToast('Quiz cancelled', 'error');
+    }
+}
+
+function restartQuiz() {
+    startQuiz(currentQuiz.level, currentQuiz.questions.length);
+}
+
+function reviewAnswers() {
+    // Go back to quiz view
+    document.getElementById('quiz-results').style.display = 'none';
+    document.getElementById('quiz-container').style.display = 'block';
+
+    // Start from beginning
+    currentQuiz.currentQuestionIndex = 0;
+    showPreviousAnswer();
+
+    showToast('Review mode: Navigate through your answers', 'success');
+}
+
+function backToQuizSelect() {
+    document.getElementById('quiz-container').style.display = 'none';
+    document.getElementById('quiz-results').style.display = 'none';
+    document.getElementById('quiz-start').style.display = 'block';
+
+    // Stop timer if running
+    if (window.quizTimerInterval) {
+        clearInterval(window.quizTimerInterval);
+    }
+}
+
+// ==================== PROGRESS UPDATE ====================
+function updateQuizProgress() {
+    const progress = ((currentQuiz.currentQuestionIndex + 1) / currentQuiz.questions.length) * 100;
+    document.getElementById('quiz-progress-fill').style.width = `${progress}%`;
+}
+
+// ==================== TIMER ====================
+function startTimer() {
+    if (window.quizTimerInterval) {
+        clearInterval(window.quizTimerInterval);
+    }
+
+    window.quizTimerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - currentQuiz.startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        document.getElementById('quiz-timer').textContent = 
+            `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+}
+
+// ==================== UTILITY FUNCTIONS ====================
+function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
+
+function capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// ==================== KEYBOARD SHORTCUTS FOR QUIZ ====================
+document.addEventListener('keydown', (e) => {
+    const quizContainer = document.getElementById('quiz-container');
+    if (quizContainer && quizContainer.style.display === 'block') {
+        // Number keys 1-4 to select options
+        if (e.key >= '1' && e.key <= '4') {
+            const optionIndex = parseInt(e.key) - 1;
+            const options = document.querySelectorAll('.quiz-option');
+            if (options[optionIndex] && !options[optionIndex].classList.contains('disabled')) {
+                selectAnswer(optionIndex);
+            }
+        }
+        // Arrow keys for navigation
+        if (e.key === 'ArrowRight' || e.key === 'Enter') {
+            const nextBtn = document.getElementById('next-btn');
+            if (!nextBtn.disabled) {
+                nextQuestion();
+            }
+        }
+        if (e.key === 'ArrowLeft') {
+            const prevBtn = document.getElementById('prev-btn');
+            if (!prevBtn.disabled) {
+                previousQuestion();
+            }
+        }
+    }
+});
+
+// ==================== INITIALIZE QUIZ ====================
+console.log('✅ Quiz system initialized with', 
+    Object.keys(quizQuestions).reduce((sum, key) => sum + quizQuestions[key].length, 0), 
+    'total questions'
+);
 // ==================== FINAL INITIALIZATION ====================
 console.log('✅ All systems initialized successfully!');
 console.log('💡 Tip: Open DevTools (F12) to see API requests in the Network tab');

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 3 - PUT vs PATCH (Update Post)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #f59e0b;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .exercise-info {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #f59e0b;
+        }
+        
+        .exercise-info h3 {
+            color: #f59e0b;
+            margin-bottom: 10px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .method-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 3px solid #e2e8f0;
+        }
+        
+        .method-card.put {
+            border-color: #3b82f6;
+        }
+        
+        .method-card.patch {
+            border-color: #10b981;
+        }
+        
+        .method-card h4 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .method-card.put h4 {
+            color: #3b82f6;
+        }
+        
+        .method-card.patch h4 {
+            color: #10b981;
+        }
+        
+        .demo-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .demo-card {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .demo-card h3 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .demo-card.put {
+            border-color: #3b82f6;
+        }
+        
+        .demo-card.put h3 {
+            color: #3b82f6;
+        }
+        
+        .demo-card.patch {
+            border-color: #10b981;
+        }
+        
+        .demo-card.patch h3 {
+            color: #10b981;
+        }
+        
+        .original-data {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #718096;
+        }
+        
+        .original-data h4 {
+            color: #718096;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        
+        button {
+            padding: 14px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .btn-put {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-put:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-patch {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-patch:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-reset {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background: #4b5563;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result.put {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+        }
+        
+        .result.patch {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+        }
+        
+        .result h4 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .result.put h4 {
+            color: #1e40af;
+        }
+        
+        .result.patch h4 {
+            color: #065f46;
+        }
+        
+        .result-data {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .warning h4 {
+            color: #f59e0b;
+            margin-bottom: 10px;
+        }
+        
+        .code-display {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .code-display pre {
+            margin: 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 15px;
+            color: #718096;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #f59e0b;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-grid,
+            .demo-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Exercise 3: PUT vs PATCH - Understanding the Difference</h1>
+        
+        <div class="exercise-info">
+            <h3>🎯 Learning Objectives:</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>Understand the <strong>critical difference</strong> between PUT and PATCH</li>
+                <li>See how <strong>PUT replaces entire resource</strong> (missing fields become null)</li>
+                <li>See how <strong>PATCH updates only specific fields</strong> (others remain unchanged)</li>
+                <li>Learn when to use PUT vs PATCH in real applications</li>
+            </ul>
+            
+            <div class="comparison-grid">
+                <div class="method-card put">
+                    <h4>📦 PUT - Replace Everything</h4>
+                    <ul style="margin-left: 20px; line-height: 1.8; font-size: 0.95em;">
+                        <li>Replaces <strong>entire resource</strong></li>
+                        <li>Must send <strong>ALL fields</strong></li>
+                        <li>Missing fields → <span class="highlight">null/deleted</span></li>
+                        <li>Use for: Complete profile update</li>
+                    </ul>
+                </div>
+                
+                <div class="method-card patch">
+                    <h4>✏️ PATCH - Update Specific Fields</h4>
+                    <ul style="margin-left: 20px; line-height: 1.8; font-size: 0.95em;">
+                        <li>Updates <strong>only specified fields</strong></li>
+                        <li>Send <strong>only fields to change</strong></li>
+                        <li>Other fields <span class="highlight">stay unchanged</span></li>
+                        <li>Use for: Change password, status</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <h4>⚠️ Common Exam Question:</h4>
+            <p><strong>"What happens if you use PUT and forget to send a field?"</strong></p>
+            <p style="margin-top: 10px;">
+                Answer: That field will be set to <strong>null</strong> or <strong>deleted</strong> because PUT 
+                replaces the entire resource. Use PATCH if you want to keep other fields unchanged.
+            </p>
+        </div>
+        
+        <div class="original-data">
+            <h4>🗄️ ORIGINAL POST DATA (ID: 1)</h4>
+            <div class="result-data" id="originalData">Loading...</div>
+        </div>
+        
+        <div class="demo-section">
+            <!-- PUT Demo -->
+            <div class="demo-card put">
+                <h3>
+                    <span>📦</span>
+                    <span>PUT - Replace All</span>
+                </h3>
+                
+                <p style="margin-bottom: 15px; color: #4b5563;">
+                    This will replace the <strong>entire post</strong>. 
+                    Notice we're only sending title and body - userId will be preserved by the API.
+                </p>
+                
+                <button class="btn-put" onclick="putUpdate()">
+                    🔄 PUT Update (All Fields)
+                </button>
+                
+                <button class="btn-reset" onclick="resetDemo()">
+                    ↺ Reset Demo
+                </button>
+                
+                <div class="result put" id="putResult"></div>
+            </div>
+            
+            <!-- PATCH Demo -->
+            <div class="demo-card patch">
+                <h3>
+                    <span>✏️</span>
+                    <span>PATCH - Update Title Only</span>
+                </h3>
+                
+                <p style="margin-bottom: 15px; color: #4b5563;">
+                    This will update <strong>only the title</strong>. 
+                    Body and userId will remain unchanged.
+                </p>
+                
+                <button class="btn-patch" onclick="patchUpdate()">
+                    ✏️ PATCH Update (Title Only)
+                </button>
+                
+                <button class="btn-reset" onclick="resetDemo()">
+                    ↺ Reset Demo
+                </button>
+                
+                <div class="result patch" id="patchResult"></div>
+            </div>
+        </div>
+        
+        <div class="code-display">
+            <h4 style="color: #f59e0b; margin-bottom: 15px;">📝 Code Comparison:</h4>
+            <pre>// ==================== PUT ====================
+// Replaces ENTIRE resource
+async function putUpdate() {
+  const response = await fetch(
+    'https://jsonplaceholder.typicode.com/posts/1',
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: 1,
+        title: 'PUT: Completely New Title',
+        body: 'PUT: Completely new body content',
+        userId: 1  // ⚠️ Must include ALL fields!
+      })
+    }
+  );
+  return await response.json();
+}
+
+// ==================== PATCH ====================
+// Updates ONLY specified fields
+async function patchUpdate() {
+  const response = await fetch(
+    'https://jsonplaceholder.typicode.com/posts/1',
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: 'PATCH: Only Title Updated'
+        // ✅ Other fields (body, userId) stay unchanged!
+      })
+    }
+  );
+  return await response.json();
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        let originalPost = null;
+        
+        // Load original data on page load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+                originalPost = await response.json();
+                
+                document.getElementById('originalData').textContent = 
+                    JSON.stringify(originalPost, null, 2);
+                    
+                console.log('📋 Original Post Data:', originalPost);
+            } catch (error) {
+                document.getElementById('originalData').textContent = 
+                    'Error loading original data';
+                console.error('Error:', error);
+            }
+        });
+        
+        // PUT - Replace entire resource
+        async function putUpdate() {
+            const putResult = document.getElementById('putResult');
+            
+            // Show loading
+            putResult.style.display = 'block';
+            putResult.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Sending PUT request...</p>
+                </div>
+            `;
+            
+            try {
+                console.log('📤 PUT Request: Replacing entire post...');
+                
+                const response = await fetch('https://jsonplaceholder.typicode.com/posts/1', {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({
+                        id: 1,
+                        title: 'PUT: Completely New Title',
+                        body: 'PUT: This is completely new body content. The entire post was replaced.',
+                        userId: 1
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('✅ PUT Response:', data);
+                
+                putResult.innerHTML = `
+                    <h4>✅ PUT Response (Status: ${response.status})</h4>
+                    <p style="margin: 10px 0; font-size: 0.95em;">
+                        <strong>What happened:</strong> Entire post was replaced with new data.
+                    </p>
+                    <div class="result-data">${JSON.stringify(data, null, 2)}</div>
+                    <p style="margin-top: 10px; color: #1e40af; font-size: 0.9em;">
+                        💡 <strong>Note:</strong> All fields were sent in the request. 
+                        If any field was missing, it would be null!
+                    </p>
+                `;
+                
+            } catch (error) {
+                console.error('❌ PUT Error:', error);
+                putResult.innerHTML = `
+                    <h4>❌ Error</h4>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        // PATCH - Update only specific fields
+        async function patchUpdate() {
+            const patchResult = document.getElementById('patchResult');
+            
+            // Show loading
+            patchResult.style.display = 'block';
+            patchResult.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Sending PATCH request...</p>
+                </div>
+            `;
+            
+            try {
+                console.log('📤 PATCH Request: Updating only title...');
+                
+                const response = await fetch('https://jsonplaceholder.typicode.com/posts/1', {
+                    method: 'PATCH',
+                    headers: { 
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({
+                        title: 'PATCH: Only Title Was Updated'
+                        // ✅ Body and userId NOT sent - they remain unchanged!
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('✅ PATCH Response:', data);
+                
+                patchResult.innerHTML = `
+                    <h4>✅ PATCH Response (Status: ${response.status})</h4>
+                    <p style="margin: 10px 0; font-size: 0.95em;">
+                        <strong>What happened:</strong> Only title was changed, body and userId stayed the same.
+                    </p>
+                    <div class="result-data">${JSON.stringify(data, null, 2)}</div>
+                    <p style="margin-top: 10px; color: #065f46; font-size: 0.9em;">
+                        💡 <strong>Note:</strong> We only sent 'title' in the request. 
+                        Other fields remained unchanged!
+                    </p>
+                `;
+                
+            } catch (error) {
+                console.error('❌ PATCH Error:', error);
+                patchResult.innerHTML = `
+                    <h4>❌ Error</h4>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        function resetDemo() {
+            document.getElementById('putResult').style.display = 'none';
+            document.getElementById('patchResult').style.display = 'none';
+            console.log('↺ Demo reset');
+        }
+        
+        // Educational console messages
+        console.log('📚 Exercise 3: PUT vs PATCH');
+        console.log('');
+        console.log('🎯 CRITICAL DIFFERENCE:');
+        console.log('');
+        console.log('PUT Example:');
+        console.log('  Original: {id: 1, title: "Old", body: "Content", userId: 1}');
+        console.log('  PUT body: {id: 1, title: "New"}  ← Missing body and userId!');
+        console.log('  Result:   {id: 1, title: "New", body: null, userId: null} ⚠️');
+        console.log('');
+        console.log('PATCH Example:');
+        console.log('  Original: {id: 1, title: "Old", body: "Content", userId: 1}');
+        console.log('  PATCH body: {title: "New"}  ← Only title');
+        console.log('  Result:   {id: 1, title: "New", body: "Content", userId: 1} ✅');
+        console.log('');
+        console.log('🔍 Try both buttons and compare the responses!');
+    </script>
+</body>
+</html>

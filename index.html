@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSS API Learning Hub - Master APIs with Style</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Particle Background -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="loader-content">
+            <div class="quantum-logo">
+                <div class="quantum-circle"></div>
+                <div class="quantum-circle"></div>
+                <div class="quantum-circle"></div>
+            </div>
+            <h1 class="glitch" data-text="SSS">SSS</h1>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loader-text">Initializing Learning Platform...</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <span class="logo-text">SSS <span class="highlight">API Hub</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="#hero" class="nav-link active">Home</a>
+                <a href="#concepts" class="nav-link">Concepts</a>
+                <a href="#methods" class="nav-link">Methods</a>
+                <a href="#exercises" class="nav-link">Practice</a>
+                <a href="#viva" class="nav-link">Viva Prep</a>
+            </div>
+            <div class="nav-actions">
+                <div class="progress-indicator">
+                    <div class="progress-circle">
+                        <svg width="40" height="40">
+                            <circle cx="20" cy="20" r="18" class="progress-bg"></circle>
+                            <circle cx="20" cy="20" r="18" class="progress-bar" id="navProgress"></circle>
+                        </svg>
+                        <span class="progress-text" id="navProgressText">0%</span>
+                    </div>
+                </div>
+                <button class="menu-toggle" id="menuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu">
+        <div class="mobile-menu-header">
+            <h2>Menu</h2>
+            <button class="close-menu" id="closeMenu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="#hero" class="mobile-nav-link">Home</a>
+            <a href="#concepts" class="mobile-nav-link">Concepts</a>
+            <a href="#methods" class="mobile-nav-link">Methods</a>
+            <a href="#exercises" class="mobile-nav-link">Practice</a>
+            <a href="#viva" class="mobile-nav-link">Viva Prep</a>
+        </div>
+    </div>
+
+    <main id="main">
+        <!-- Hero Section -->
+        <section id="hero" class="section hero-section">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <div class="badge pulse">
+                        <span class="badge-dot"></span>
+                        Personalized for SSS
+                    </div>
+                    <h1 class="hero-title">
+                        Master <span class="gradient-text">APIs</span>
+                        <br>The Smart Way
+                    </h1>
+                    <p class="hero-subtitle">
+                        Your comprehensive guide to understanding REST APIs, HTTP methods, and real-world implementation. 
+                        Designed specifically for your learning journey.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 class="counter" data-target="50">0</h3>
+                                <p>Topics Covered</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 class="counter" data-target="25">0</h3>
+                                <p>Practice Exercises</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 class="counter" data-target="100">0</h3>
+                                <p>Success Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="scrollToSection('concepts')">
+                            <span>Start Learning</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button class="btn btn-secondary" onclick="scrollToSection('exercises')">
+                            <i class="fas fa-laptop-code"></i>
+                            <span>Practice Now</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="hero-visual">
+                        <div class="api-diagram">
+                            <div class="api-node client">
+                                <i class="fas fa-user"></i>
+                                <span>Client</span>
+                            </div>
+                            <div class="api-connection">
+                                <div class="connection-line"></div>
+                                <div class="data-flow"></div>
+                            </div>
+                            <div class="api-node server">
+                                <i class="fas fa-server"></i>
+                                <span>API</span>
+                            </div>
+                            <div class="api-connection">
+                                <div class="connection-line"></div>
+                                <div class="data-flow"></div>
+                            </div>
+                            <div class="api-node database">
+                                <i class="fas fa-database"></i>
+                                <span>Database</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="floating-elements">
+                <div class="float-item" style="top: 10%; left: 10%;">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="float-item" style="top: 20%; right: 15%;">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="float-item" style="bottom: 20%; left: 15%;">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="float-item" style="bottom: 30%; right: 10%;">
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Concepts Section -->
+        <section id="concepts" class="section concepts-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">FUNDAMENTALS</span>
+                    <h2 class="section-title">Core API Concepts</h2>
+                    <p class="section-subtitle">Master the building blocks of API development</p>
+                </div>
+
+                <div class="concepts-grid">
+                    <!-- API Basics -->
+                    <div class="concept-card" data-concept="api">
+                        <div class="concept-icon">
+                            <i class="fas fa-plug"></i>
+                        </div>
+                        <h3>What is an API?</h3>
+                        <p>Application Programming Interface - a bridge between different software applications</p>
+                        <button class="btn-learn" onclick="openModal('api')">Learn More</button>
+                    </div>
+
+                    <!-- REST API -->
+                    <div class="concept-card" data-concept="rest">
+                        <div class="concept-icon">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3>REST API</h3>
+                        <p>Representational State Transfer - stateless architecture using HTTP methods</p>
+                        <button class="btn-learn" onclick="openModal('rest')">Learn More</button>
+                    </div>
+
+                    <!-- JSON -->
+                    <div class="concept-card" data-concept="json">
+                        <div class="concept-icon">
+                            <i class="fas fa-file-code"></i>
+                        </div>
+                        <h3>JSON Format</h3>
+                        <p>JavaScript Object Notation - lightweight data interchange format</p>
+                        <button class="btn-learn" onclick="openModal('json')">Learn More</button>
+                    </div>
+
+                    <!-- Endpoints -->
+                    <div class="concept-card" data-concept="endpoints">
+                        <div class="concept-icon">
+                            <i class="fas fa-map-signs"></i>
+                        </div>
+                        <h3>Endpoints</h3>
+                        <p>Specific URLs where API resources can be accessed</p>
+                        <button class="btn-learn" onclick="openModal('endpoints')">Learn More</button>
+                    </div>
+
+                    <!-- Status Codes -->
+                    <div class="concept-card" data-concept="status">
+                        <div class="concept-icon">
+                            <i class="fas fa-traffic-light"></i>
+                        </div>
+                        <h3>Status Codes</h3>
+                        <p>HTTP response codes indicating request success or failure</p>
+                        <button class="btn-learn" onclick="openModal('status')">Learn More</button>
+                    </div>
+
+                    <!-- Authentication -->
+                    <div class="concept-card" data-concept="auth">
+                        <div class="concept-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3>Authentication</h3>
+                        <p>Verifying identity and controlling access to API resources</p>
+                        <button class="btn-learn" onclick="openModal('auth')">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HTTP Methods Section -->
+        <section id="methods" class="section methods-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">CRUD OPERATIONS</span>
+                    <h2 class="section-title">HTTP Methods</h2>
+                    <p class="section-subtitle">Learn the five essential HTTP methods</p>
+                </div>
+
+                <div class="methods-container">
+                    <!-- GET -->
+                    <div class="method-card get-method" onclick="selectMethod('GET')">
+                        <div class="method-header">
+                            <div class="method-badge get">GET</div>
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h3>Read Data</h3>
+                        <p>Retrieve information from the server without modifying it</p>
+                        <div class="method-details">
+                            <span><i class="fas fa-check"></i> No Request Body</span>
+                            <span><i class="fas fa-check"></i> Status: 200 OK</span>
+                            <span><i class="fas fa-check"></i> Safe & Idempotent</span>
+                        </div>
+                    </div>
+
+                    <!-- POST -->
+                    <div class="method-card post-method" onclick="selectMethod('POST')">
+                        <div class="method-header">
+                            <div class="method-badge post">POST</div>
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <h3>Create Data</h3>
+                        <p>Send data to create new resources on the server</p>
+                        <div class="method-details">
+                            <span><i class="fas fa-check"></i> Requires Body</span>
+                            <span><i class="fas fa-check"></i> Status: 201 Created</span>
+                            <span><i class="fas fa-check"></i> Not Idempotent</span>
+                        </div>
+                    </div>
+
+                    <!-- PUT -->
+                    <div class="method-card put-method" onclick="selectMethod('PUT')">
+                        <div class="method-header">
+                            <div class="method-badge put">PUT</div>
+                            <i class="fas fa-sync"></i>
+                        </div>
+                        <h3>Replace Data</h3>
+                        <p>Replace entire resource with new data</p>
+                        <div class="method-details">
+                            <span><i class="fas fa-check"></i> Requires All Fields</span>
+                            <span><i class="fas fa-check"></i> Status: 200 OK</span>
+                            <span><i class="fas fa-exclamation-triangle"></i> Missing → Null</span>
+                        </div>
+                    </div>
+
+                    <!-- PATCH -->
+                    <div class="method-card patch-method" onclick="selectMethod('PATCH')">
+                        <div class="method-header">
+                            <div class="method-badge patch">PATCH</div>
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h3>Update Partially</h3>
+                        <p>Modify only specific fields of a resource</p>
+                        <div class="method-details">
+                            <span><i class="fas fa-check"></i> Partial Body</span>
+                            <span><i class="fas fa-check"></i> Status: 200 OK</span>
+                            <span><i class="fas fa-check"></i> Others Unchanged</span>
+                        </div>
+                    </div>
+
+                    <!-- DELETE -->
+                    <div class="method-card delete-method" onclick="selectMethod('DELETE')">
+                        <div class="method-header">
+                            <div class="method-badge delete">DELETE</div>
+                            <i class="fas fa-trash"></i>
+                        </div>
+                        <h3>Remove Data</h3>
+                        <p>Delete resources from the server</p>
+                        <div class="method-details">
+                            <span><i class="fas fa-check"></i> No Request Body</span>
+                            <span><i class="fas fa-check"></i> Status: 200/204</span>
+                            <span><i class="fas fa-check"></i> Idempotent</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Method Comparison -->
+                <div class="method-comparison">
+                    <h3><i class="fas fa-balance-scale"></i> PUT vs PATCH - The Critical Difference</h3>
+                    <div class="comparison-grid">
+                        <div class="comparison-card put-card">
+                            <h4><i class="fas fa-sync"></i> PUT Method</h4>
+                            <ul>
+                                <li><strong>Replaces entire resource</strong></li>
+                                <li>Must send ALL fields</li>
+                                <li>Missing fields become null/deleted</li>
+                                <li>Use for complete updates</li>
+                            </ul>
+                            <div class="example-code">
+                                <code>
+PUT /users/1
+{
+  "name": "SSS",
+  "email": "sss@example.com"
+  // Missing: phone → becomes null!
+}
+                                </code>
+                            </div>
+                        </div>
+                        <div class="comparison-card patch-card">
+                            <h4><i class="fas fa-edit"></i> PATCH Method</h4>
+                            <ul>
+                                <li><strong>Updates specific fields only</strong></li>
+                                <li>Send only fields to change</li>
+                                <li>Other fields stay unchanged</li>
+                                <li>Use for partial updates</li>
+                            </ul>
+                            <div class="example-code">
+                                <code>
+PATCH /users/1
+{
+  "name": "SSS"
+  // email & phone stay unchanged ✓
+}
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Exercises Section -->
+        <section id="exercises" class="section exercises-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">HANDS-ON PRACTICE</span>
+                    <h2 class="section-title">Interactive Exercises</h2>
+                    <p class="section-subtitle">Learn by doing with real API calls</p>
+                </div>
+
+                <div class="exercise-tabs">
+                    <button class="exercise-tab active" data-exercise="get">
+                        <i class="fas fa-download"></i> GET Exercise
+                    </button>
+                    <button class="exercise-tab" data-exercise="post">
+                        <i class="fas fa-plus"></i> POST Exercise
+                    </button>
+                    <button class="exercise-tab" data-exercise="putpatch">
+                        <i class="fas fa-edit"></i> PUT/PATCH
+                    </button>
+                    <button class="exercise-tab" data-exercise="crud">
+                        <i class="fas fa-tasks"></i> Full CRUD
+                    </button>
+                </div>
+
+                <div class="exercise-content">
+                    <!-- GET Exercise -->
+                    <div class="exercise-panel active" id="exercise-get">
+                        <div class="exercise-info">
+                            <h3><i class="fas fa-download"></i> Exercise 1: Fetch Users (GET)</h3>
+                            <p>Practice making GET requests to retrieve user data from the API</p>
+                        </div>
+                        <div class="exercise-controls">
+                            <button class="btn btn-primary" onclick="runGetExercise()">
+                                <i class="fas fa-play"></i> Run GET Request
+                            </button>
+                            <button class="btn btn-secondary" onclick="clearResults()">
+                                <i class="fas fa-eraser"></i> Clear Results
+                            </button>
+                        </div>
+                        <div class="exercise-result" id="get-result"></div>
+                    </div>
+
+                    <!-- POST Exercise -->
+                    <div class="exercise-panel" id="exercise-post">
+                        <div class="exercise-info">
+                            <h3><i class="fas fa-plus"></i> Exercise 2: Create Post (POST)</h3>
+                            <p>Learn to send data to the server to create new resources</p>
+                        </div>
+                        <div class="form-container">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" id="post-title" placeholder="Enter post title" maxlength="100">
+                            </div>
+                            <div class="form-group">
+                                <label>Content</label>
+                                <textarea id="post-body" placeholder="Enter post content" rows="4" maxlength="500"></textarea>
+                            </div>
+                            <div class="exercise-controls">
+                                <button class="btn btn-primary" onclick="runPostExercise()">
+                                    <i class="fas fa-paper-plane"></i> Create Post
+                                </button>
+                            </div>
+                        </div>
+                        <div class="exercise-result" id="post-result"></div>
+                    </div>
+
+                    <!-- PUT/PATCH Exercise -->
+                    <div class="exercise-panel" id="exercise-putpatch">
+                        <div class="exercise-info">
+                            <h3><i class="fas fa-edit"></i> Exercise 3: Update Data (PUT vs PATCH)</h3>
+                            <p>See the difference between PUT and PATCH methods</p>
+                        </div>
+                        <div class="comparison-demo">
+                            <div class="demo-column">
+                                <h4>PUT - Replace All</h4>
+                                <button class="btn btn-primary" onclick="runPutExercise()">
+                                    <i class="fas fa-sync"></i> Try PUT
+                                </button>
+                                <div class="demo-result" id="put-result"></div>
+                            </div>
+                            <div class="demo-column">
+                                <h4>PATCH - Update Specific</h4>
+                                <button class="btn btn-primary" onclick="runPatchExercise()">
+                                    <i class="fas fa-edit"></i> Try PATCH
+                                </button>
+                                <div class="demo-result" id="patch-result"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Full CRUD Exercise -->
+                    <div class="exercise-panel" id="exercise-crud">
+                        <div class="exercise-info">
+                            <h3><i class="fas fa-tasks"></i> Exercise 4: Complete CRUD Application</h3>
+                            <p>Practice all HTTP methods in a full CRUD workflow</p>
+                        </div>
+                        <div class="crud-container">
+                            <div class="crud-controls">
+                                <button class="btn btn-primary" onclick="loadPosts()">
+                                    <i class="fas fa-download"></i> Load Posts
+                                </button>
+                                <button class="btn btn-secondary" onclick="clearPosts()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                            </div>
+                            <div id="posts-container" class="posts-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Viva Questions Section -->
+        <section id="viva" class="section viva-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">EXAM PREPARATION</span>
+                    <h2 class="section-title">Viva Questions & Answers</h2>
+                    <p class="section-subtitle">Master the most common interview questions</p>
+                </div>
+
+                <div class="viva-container">
+                    <div class="viva-categories">
+                        <button class="viva-category active" data-category="all">
+                            <i class="fas fa-th"></i> All Questions
+                        </button>
+                        <button class="viva-category" data-category="methods">
+                            <i class="fas fa-code"></i> HTTP Methods
+                        </button>
+                        <button class="viva-category" data-category="status">
+                            <i class="fas fa-traffic-light"></i> Status Codes
+                        </button>
+                        <button class="viva-category" data-category="auth">
+                            <i class="fas fa-lock"></i> Auth & Security
+                        </button>
+                        <button class="viva-category" data-category="advanced">
+                            <i class="fas fa-brain"></i> Advanced
+                        </button>
+                    </div>
+
+                    <div class="viva-questions" id="viva-questions">
+                        <!-- Questions will be dynamically loaded -->
+                    </div>
+                </div>
+
+                <!-- Quick Reference -->
+                <div class="quick-reference">
+                    <h3><i class="fas fa-bookmark"></i> Quick Reference Cheat Sheet</h3>
+                    <div class="reference-grid">
+                        <div class="reference-card">
+                            <h4>HTTP Methods</h4>
+                            <ul>
+                                <li><span class="method-tag get">GET</span> - Read</li>
+                                <li><span class="method-tag post">POST</span> - Create</li>
+                                <li><span class="method-tag put">PUT</span> - Replace</li>
+                                <li><span class="method-tag patch">PATCH</span> - Update</li>
+                                <li><span class="method-tag delete">DELETE</span> - Remove</li>
+                            </ul>
+                        </div>
+                        <div class="reference-card">
+                            <h4>Status Codes</h4>
+                            <ul>
+                                <li><span class="status-tag success">200</span> - OK</li>
+                                <li><span class="status-tag success">201</span> - Created</li>
+                                <li><span class="status-tag error">400</span> - Bad Request</li>
+                                <li><span class="status-tag error">401</span> - Unauthorized</li>
+                                <li><span class="status-tag error">404</span> - Not Found</li>
+                            </ul>
+                        </div>
+                        <div class="reference-card">
+                            <h4>Auth vs Authorization</h4>
+                            <ul>
+                                <li><strong>Authentication:</strong> WHO are you?</li>
+                                <li><strong>Authorization:</strong> WHAT can you do?</li>
+                                <li>Auth → 401 Error</li>
+                                <li>Authorization → 403 Error</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Tracking -->
+        <section class="progress-section">
+            <div class="container">
+                <div class="progress-card">
+                    <h3><i class="fas fa-chart-line"></i> Your Learning Progress</h3>
+                    <div class="progress-stats">
+                        <div class="progress-item">
+                            <div class="progress-circle-large">
+                                <svg width="120" height="120">
+                                    <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
+                                    <circle cx="60" cy="60" r="54" class="progress-bar" id="overallProgress"></circle>
+                                </svg>
+                                <span class="progress-text" id="overallProgressText">0%</span>
+                            </div>
+                            <p>Overall Progress</p>
+                        </div>
+                        <div class="progress-details">
+                            <div class="progress-bar-item">
+                                <span>Concepts Learned</span>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: 85%">85%</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar-item">
+                                <span>Exercises Completed</span>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: 60%">60%</div>
+                                </div>
+                            </div>
+                            <div class="progress-bar-item">
+                                <span>Viva Questions Mastered</span>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: 75%">75%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>SSS API Learning Hub</h3>
+                    <p>Master APIs with confidence and style</p>
+                </div>
+                <div class="footer-info">
+                    <p>Made with <i class="fas fa-heart"></i> for SSS</p>
+                    <p>&copy; 2025 - Your Personalized Learning Platform</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

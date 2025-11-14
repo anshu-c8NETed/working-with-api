@@ -41,6 +41,7 @@
                 <a href="#concepts" class="nav-link">Concepts</a>
                 <a href="#methods" class="nav-link">Methods</a>
                 <a href="#exercises" class="nav-link">Practice</a>
+                <a href="#quiz" class="nav-link">Quiz</a>
                 <a href="#viva" class="nav-link">Viva Prep</a>
             </div>
             <div class="nav-actions">
@@ -75,6 +76,7 @@
             <a href="#concepts" class="mobile-nav-link">Concepts</a>
             <a href="#methods" class="mobile-nav-link">Methods</a>
             <a href="#exercises" class="mobile-nav-link">Practice</a>
+            <a href="#quiz" class="mobile-nav-link">Quiz</a>
             <a href="#viva" class="mobile-nav-link">Viva Prep</a>
         </div>
     </div>
@@ -130,9 +132,9 @@
                             <span>Start Learning</span>
                             <i class="fas fa-arrow-right"></i>
                         </button>
-                        <button class="btn btn-secondary" onclick="scrollToSection('exercises')">
-                            <i class="fas fa-laptop-code"></i>
-                            <span>Practice Now</span>
+                        <button class="btn btn-secondary" onclick="scrollToSection('quiz')">
+                            <i class="fas fa-brain"></i>
+                            <span>Take Quiz</span>
                         </button>
                     </div>
                 </div>
@@ -490,6 +492,175 @@ PATCH /users/1
                                 </button>
                             </div>
                             <div id="posts-container" class="posts-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section - NEW -->
+        <section id="quiz" class="section quiz-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">TEST YOUR KNOWLEDGE</span>
+                    <h2 class="section-title">Interactive Quiz</h2>
+                    <p class="section-subtitle">Challenge yourself and track your progress</p>
+                </div>
+
+                <!-- Quiz Options -->
+                <div id="quiz-start" class="quiz-start">
+                    <div class="quiz-options-grid">
+                        <div class="quiz-option-card" onclick="startQuiz('beginner', 10)">
+                            <div class="quiz-option-icon">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <h3>Beginner Quiz</h3>
+                            <p>10 basic questions covering fundamentals</p>
+                            <ul class="quiz-features">
+                                <li><i class="fas fa-check"></i> HTTP Methods basics</li>
+                                <li><i class="fas fa-check"></i> Status codes</li>
+                                <li><i class="fas fa-check"></i> JSON fundamentals</li>
+                            </ul>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-play"></i> Start Quiz
+                            </button>
+                        </div>
+
+                        <div class="quiz-option-card" onclick="startQuiz('intermediate', 15)">
+                            <div class="quiz-option-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <h3>Intermediate Quiz</h3>
+                            <p>15 questions with moderate difficulty</p>
+                            <ul class="quiz-features">
+                                <li><i class="fas fa-check"></i> PUT vs PATCH</li>
+                                <li><i class="fas fa-check"></i> Authentication</li>
+                                <li><i class="fas fa-check"></i> Error handling</li>
+                            </ul>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-play"></i> Start Quiz
+                            </button>
+                        </div>
+
+                        <div class="quiz-option-card" onclick="startQuiz('advanced', 20)">
+                            <div class="quiz-option-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <h3>Advanced Quiz</h3>
+                            <p>20 challenging questions for experts</p>
+                            <ul class="quiz-features">
+                                <li><i class="fas fa-check"></i> Complex scenarios</li>
+                                <li><i class="fas fa-check"></i> Best practices</li>
+                                <li><i class="fas fa-check"></i> Real-world problems</li>
+                            </ul>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-play"></i> Start Quiz
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Container -->
+                <div id="quiz-container" class="quiz-container" style="display: none;">
+                    <!-- Quiz Header -->
+                    <div class="quiz-header">
+                        <div class="quiz-progress-info">
+                            <h3 id="quiz-title">Quiz in Progress</h3>
+                            <p>Question <span id="current-question">1</span> of <span id="total-questions">10</span></p>
+                        </div>
+                        <div class="quiz-stats">
+                            <div class="quiz-stat">
+                                <i class="fas fa-clock"></i>
+                                <span id="quiz-timer">00:00</span>
+                            </div>
+                            <div class="quiz-stat">
+                                <i class="fas fa-check-circle"></i>
+                                <span id="quiz-score">0/0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="quiz-progress-bar">
+                        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+                    </div>
+
+                    <!-- Question Card -->
+                    <div class="quiz-question-card" id="quiz-question-card">
+                        <div class="question-number">Question <span id="q-number">1</span></div>
+                        <h3 class="question-text" id="question-text"></h3>
+                        
+                        <div class="quiz-options" id="quiz-options">
+                            <!-- Options will be dynamically inserted -->
+                        </div>
+
+                        <div class="quiz-explanation" id="quiz-explanation" style="display: none;">
+                            <h4><i class="fas fa-lightbulb"></i> Explanation</h4>
+                            <p id="explanation-text"></p>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Navigation -->
+                    <div class="quiz-navigation">
+                        <button class="btn btn-secondary" id="prev-btn" onclick="previousQuestion()" disabled>
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button class="btn btn-secondary" onclick="quitQuiz()">
+                            <i class="fas fa-times"></i> Quit Quiz
+                        </button>
+                        <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Results -->
+                <div id="quiz-results" class="quiz-results" style="display: none;">
+                    <div class="results-content">
+                        <div class="results-icon" id="results-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h2 id="results-title">Quiz Complete!</h2>
+                        <div class="results-score">
+                            <div class="score-circle">
+                                <svg width="200" height="200">
+                                    <circle cx="100" cy="100" r="90" class="progress-bg"></circle>
+                                    <circle cx="100" cy="100" r="90" class="progress-bar" id="results-progress"></circle>
+                                </svg>
+                                <div class="score-text">
+                                    <span id="results-percentage">0%</span>
+                                    <p id="results-fraction">0/10</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="results-stats">
+                            <div class="result-stat">
+                                <i class="fas fa-check-circle"></i>
+                                <span id="correct-answers">0</span>
+                                <p>Correct</p>
+                            </div>
+                            <div class="result-stat">
+                                <i class="fas fa-times-circle"></i>
+                                <span id="incorrect-answers">0</span>
+                                <p>Incorrect</p>
+                            </div>
+                            <div class="result-stat">
+                                <i class="fas fa-clock"></i>
+                                <span id="time-taken">0:00</span>
+                                <p>Time Taken</p>
+                            </div>
+                        </div>
+                        <p id="results-message" class="results-message"></p>
+                        <div class="results-actions">
+                            <button class="btn btn-primary" onclick="reviewAnswers()">
+                                <i class="fas fa-eye"></i> Review Answers
+                            </button>
+                            <button class="btn btn-secondary" onclick="restartQuiz()">
+                                <i class="fas fa-redo"></i> Try Again
+                            </button>
+                            <button class="btn btn-secondary" onclick="backToQuizSelect()">
+                                <i class="fas fa-home"></i> Back to Quizzes
+                            </button>
                         </div>
                     </div>
                 </div>

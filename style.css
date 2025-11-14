@@ -455,14 +455,13 @@ body {
 }
 
 .hero-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .hero-left {
     animation: fadeInUp 1s ease;
+    padding-left: 40px;
 }
 
 .badge {
@@ -2511,6 +2510,7 @@ body {
     }
     
     .hero-content {
+        padding-right: 40px;
         gap: 40px;
     }
     
